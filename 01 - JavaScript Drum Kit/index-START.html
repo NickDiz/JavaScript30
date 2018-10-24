@@ -7,7 +7,6 @@
 </head>
 <body>
 
-
   <div class="keys">
     <div data-key="65" class="key">
       <kbd>A</kbd>
@@ -58,8 +57,43 @@
   <audio data-key="76" src="sounds/tink.wav"></audio>
 
 <script>
-  if(true == true)
-    return; 
+  const keys = document.querySelectorAll('.key'); 
+  var keyCodes = []; 
+
+  keys.forEach(element => {
+    keyCodes.push(element.dataset.key)
+  });
+
+  playRandomSound = () => {
+    var randomKeyCode = keyCodes[Math.floor(Math.random() * keyCodes.length)];
+
+    var audio = document.querySelector(`audio[data-key="${randomKeyCode}"]`);
+    var key = document.querySelector(`.key[data-key="${randomKeyCode}"]`);
+
+    audio.currentTime = 0; 
+    audio.play(); 
+    key.classList.add('playing'); 
+  }
+
+  window.addEventListener('keydown', e => {
+    const audio = document.querySelector(`audio[data-key="${e.keyCode}"]`);
+    const key = document.querySelector(`.key[data-key="${e.keyCode}"]`);
+    if(!audio) 
+      return; 
+    audio.currentTime = 0; 
+    audio.play(); 
+    key.classList.add('playing'); 
+  })
+
+  keys.forEach(key => key.addEventListener('transitionend', e => {
+    if(e.propertyName !== 'transform')
+      return; 
+  
+    e.target.classList.remove('playing'); 
+  }));
+
+  window.setInterval(playRandomSound, 250); 
+
 </script>
 
 
